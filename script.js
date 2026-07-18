@@ -9,6 +9,14 @@ import {
 } from "./auth.js";
 import { saveBlueprint, listBlueprints, removeBlueprint } from "./blueprints.js";
 
+// ============================================================
+//  ⚙️  SETTINGS — EDIT THESE
+//  ------------------------------------------------------------
+//  When your Starter Kit is live on Gumroad, paste its URL here.
+//  Until then, leave it as "" and the upgrade box stays hidden.
+// ============================================================
+var GUMROAD_KIT_URL = "";   // e.g. "https://charlespalmer.gumroad.com/l/starter-kit"
+
 // ---------- quiz state ----------
 var state = { type: null, goal: null, pain: null };
 var current = 1;
@@ -152,35 +160,105 @@ var TYPE_TIP = {
   unsure: "Try one of each for a week. Pick the one you'd do even if nobody watched."
 };
 
-function buildBlueprint() {
-  var typeWord = TYPE_LABEL[state.type] || "your work";
-  var plan = goalPlan(state.goal, typeWord);
-  var tool = TOOLS[state.pain] || TOOLS.overwhelm;
+// Compute the full plan from a set of answers ({type, goal, pain}).
+// Deterministic, so a saved blueprint can be fully rebuilt later.
+function computePlan(answers) {
+  var typeWord = TYPE_LABEL[answers.type] || "your work";
+  var plan = goalPlan(answers.goal, typeWord);
+  var tool = TOOLS[answers.pain] || TOOLS.overwhelm;
   var summary = "A simple plan for " + typeWord + " — built around your #1 struggle. Do these in order and don't skip ahead.";
+  return {
+    typeWord: typeWord,
+    title: plan.title,
+    summary: summary,
+    insight: PAIN_INSIGHT[answers.pain] || "Small, steady steps beat big, rare ones.",
+    steps: plan.steps,
+    tip: TYPE_TIP[answers.type] || "Start before you feel ready. Ready comes from doing.",
+    tool: tool
+  };
+}
 
-  lastPlan = { title: plan.title, summary: summary };
-
-  document.getElementById("resultsTitle").textContent = plan.title;
-  document.getElementById("resultsSummary").textContent = summary;
+// Render a computed plan into the results view.
+function renderPlan(full) {
+  document.getElementById("resultsTitle").textContent = full.title;
+  document.getElementById("resultsSummary").textContent = full.summary;
 
   var grid = document.getElementById("cardsGrid");
   grid.innerHTML = "";
-  grid.appendChild(card("🧠", "The insight", "insight", null, PAIN_INSIGHT[state.pain] || "Small, steady steps beat big, rare ones."));
-  grid.appendChild(card("✅", "Your action steps", "do", plan.steps, null));
-  grid.appendChild(card("💬", "One tip for " + typeWord, "tip", null, TYPE_TIP[state.type] || "Start before you feel ready. Ready comes from doing."));
+  grid.appendChild(card("🧠", "The insight", "insight", null, full.insight));
+  grid.appendChild(card("✅", "Your action steps", "do", full.steps, null));
+  grid.appendChild(card("💬", "One tip for " + full.typeWord, "tip", null, full.tip));
 
-  document.getElementById("alleyTitle").textContent = "Set up " + tool.name;
-  document.getElementById("alleyBody").textContent = tool.why;
+  document.getElementById("alleyTitle").textContent = "Set up " + full.tool.name;
+  document.getElementById("alleyBody").textContent = full.tool.why;
   var cta = document.getElementById("alleyCta");
-  cta.href = tool.link;
-  cta.textContent = "Get " + tool.name.replace(/^an? /, "") + " →";
+  cta.href = full.tool.link;
+  cta.textContent = "Get " + full.tool.name.replace(/^an? /, "") + " →";
+
+  // Upgrade box — only show if a Gumroad URL is set
+  var upgradeBox = document.getElementById("upgradeBox");
+  var upgradeCta = document.getElementById("upgradeCta");
+  if (GUMROAD_KIT_URL) {
+    upgradeCta.href = GUMROAD_KIT_URL;
+    upgradeBox.style.display = "";
+  } else {
+    upgradeBox.style.display = "none";
+  }
+
+  results.hidden = false;
+}
+
+function buildBlueprint() {
+  var full = computePlan(state);
+  lastPlan = { title: full.title, summary: full.summary };
+  renderPlan(full);
 
   btnSave.disabled = false;
   btnSave.textContent = "💾 Save this blueprint";
 
   quiz.style.display = "none";
-  results.hidden = false;
   results.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+// Build a plain-text version of a blueprint for download.
+function blueprintToText(answers) {
+  var f = computePlan(answers);
+  var L = [];
+  L.push("CREATOR COMPASS — YOUR WORKFLOW BLUEPRINT");
+  L.push("==========================================");
+  L.push("");
+  L.push(f.title.toUpperCase());
+  L.push(f.summary);
+  L.push("");
+  L.push("WHY YOU'RE STUCK");
+  L.push("- " + f.insight);
+  L.push("");
+  L.push("DO THIS NEXT");
+  f.steps.forEach(function (s, i) { L.push((i + 1) + ". " + s); });
+  L.push("");
+  L.push("QUICK WIN (for " + f.typeWord + ")");
+  L.push("- " + f.tip);
+  L.push("");
+  L.push("WHAT TO DO NEXT");
+  L.push("Set up " + f.tool.name + ".");
+  L.push(f.tool.why);
+  L.push("");
+  L.push("------------------------------------------");
+  L.push("Made with Creator Compass");
+  return L.join("\n");
+}
+
+// Trigger a client-side download of a text file.
+function downloadText(filename, text) {
+  var blob = new Blob([text], { type: "text/plain;charset=utf-8" });
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement("a");
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
 }
 
 function card(icon, kicker, kind, listItems, bodyText) {
@@ -302,16 +380,43 @@ async function renderSaved() {
       var when = it.createdAt && it.createdAt.toDate
         ? it.createdAt.toDate().toLocaleDateString()
         : "just now";
+      var answers = it.answers || {};
       var row = document.createElement("div");
       row.className = "saved-item";
       row.innerHTML =
-        '<div><div class="saved-item-title">' + esc(it.planTitle || "Blueprint") + '</div>' +
-        '<div class="saved-item-meta">' + esc(when) + '</div></div>' +
-        '<button class="saved-del" data-id="' + esc(it.id) + '">Delete</button>';
+        '<div class="saved-item-main">' +
+          '<div class="saved-item-title">' + esc(it.planTitle || "Blueprint") + '</div>' +
+          '<div class="saved-item-meta">' + esc(when) + '</div>' +
+        '</div>' +
+        '<div class="saved-item-actions">' +
+          '<button class="saved-open">Open</button>' +
+          '<button class="saved-dl">Download</button>' +
+          '<button class="saved-del">Delete</button>' +
+        '</div>';
+
+      // Open — rebuild and show the full plan
+      row.querySelector(".saved-open").addEventListener("click", function () {
+        var full = computePlan(answers);
+        quiz.style.display = "none";
+        renderPlan(full);
+        btnSave.disabled = true;
+        btnSave.textContent = "✓ Saved";
+        results.scrollIntoView({ behavior: "smooth", block: "start" });
+      });
+
+      // Download — save a .txt copy locally
+      row.querySelector(".saved-dl").addEventListener("click", function () {
+        var safe = (it.planTitle || "blueprint").toLowerCase().replace(/[^a-z0-9]+/g, "-");
+        downloadText("creator-compass-" + safe + ".txt", blueprintToText(answers));
+        toast("Downloaded to your device.");
+      });
+
+      // Delete
       row.querySelector(".saved-del").addEventListener("click", async function () {
         try { await removeBlueprint(it.id); toast("Deleted."); renderSaved(); }
         catch (e) { toast("Couldn't delete."); }
       });
+
       savedList.appendChild(row);
     });
   } catch (err) {
