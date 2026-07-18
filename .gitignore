@@ -1,0 +1,16 @@
+# dependencies
+node_modules/
+
+# firebase
+.firebase/
+firebase-debug.log
+.firebaserc
+
+# env / local
+.env
+.env.local
+.DS_Store
+
+# editor
+.vscode/
+*.swp

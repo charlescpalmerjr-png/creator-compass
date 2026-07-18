@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Creator Compass — Your Simple Workflow Blueprint</title>
+  <meta name="description" content="Tell us what you make and what's stuck. Get a clear, step-by-step workflow blueprint built for beginners." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="page">
+
+    <!-- ============ ACCOUNT BAR ============ -->
+    <div class="account-bar">
+      <span class="brand-mini">Creator Compass</span>
+      <div class="account-actions" id="accountActions">
+        <!-- filled by JS: either "Sign in" or email + "Sign out" -->
+      </div>
+    </div>
+
+    <!-- ============ HEADER ============ -->
+    <header class="hero">
+      <div class="hero-badge">Made for people just starting out</div>
+      <h1 class="hero-title">Stop researching.<br /><span class="accent-underline">Start creating.</span></h1>
+      <p class="hero-sub">
+        Too many tools. Too much advice. Answer three quick questions and get one
+        simple plan — written plainly, one step at a time.
+      </p>
+      <a href="#quiz" class="hero-cta">Build my blueprint</a>
+      <ul class="hero-points">
+        <li><span class="tick">✓</span> No tech words</li>
+        <li><span class="tick">✓</span> Takes 30 seconds</li>
+        <li><span class="tick">✓</span> Save your plans</li>
+      </ul>
+    </header>
+
+    <!-- ============ QUIZ ============ -->
+    <section id="quiz" class="quiz" aria-label="Diagnostic quiz">
+      <div class="progress-wrap" aria-hidden="true">
+        <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+        <div class="progress-label"><span id="stepNum">1</span> of 3</div>
+      </div>
+
+      <div class="step is-active" data-step="1">
+        <p class="step-eyebrow">Question 1</p>
+        <h2 class="step-q">What do you make?</h2>
+        <p class="step-help">Pick the one closest to you. There's no wrong answer.</p>
+        <div class="options" role="group" aria-label="Content type">
+          <button class="option" data-group="type" data-value="video"><span class="option-emoji">🎬</span><span class="option-text">Videos</span><span class="option-note">YouTube, shorts, reels</span></button>
+          <button class="option" data-group="type" data-value="writing"><span class="option-emoji">✍️</span><span class="option-text">Writing</span><span class="option-note">Blog, newsletter, posts</span></button>
+          <button class="option" data-group="type" data-value="audio"><span class="option-emoji">🎙️</span><span class="option-text">Audio</span><span class="option-note">Podcast, voice</span></button>
+          <button class="option" data-group="type" data-value="visual"><span class="option-emoji">🎨</span><span class="option-text">Visuals</span><span class="option-note">Design, art, photos</span></button>
+          <button class="option" data-group="type" data-value="digital"><span class="option-emoji">📦</span><span class="option-text">Digital products</span><span class="option-note">Templates, guides, ebooks</span></button>
+          <button class="option" data-group="type" data-value="unsure"><span class="option-emoji">🤷</span><span class="option-text">Still deciding</span><span class="option-note">Help me pick</span></button>
+        </div>
+      </div>
+
+      <div class="step" data-step="2">
+        <p class="step-eyebrow">Question 2</p>
+        <h2 class="step-q">What are you trying to do right now?</h2>
+        <p class="step-help">Your main goal for the next month or two.</p>
+        <div class="options" role="group" aria-label="Current goal">
+          <button class="option" data-group="goal" data-value="start"><span class="option-emoji">🌱</span><span class="option-text">Just get started</span><span class="option-note">Post my first thing</span></button>
+          <button class="option" data-group="goal" data-value="consistent"><span class="option-emoji">🔁</span><span class="option-text">Stay consistent</span><span class="option-note">Show up regularly</span></button>
+          <button class="option" data-group="goal" data-value="grow"><span class="option-emoji">📈</span><span class="option-text">Grow an audience</span><span class="option-note">Reach more people</span></button>
+          <button class="option" data-group="goal" data-value="money"><span class="option-emoji">💰</span><span class="option-text">Make my first money</span><span class="option-note">Earn from my work</span></button>
+        </div>
+      </div>
+
+      <div class="step" data-step="3">
+        <p class="step-eyebrow">Question 3</p>
+        <h2 class="step-q">What's your biggest struggle?</h2>
+        <p class="step-help">The thing that slows you down most.</p>
+        <div class="options" role="group" aria-label="Biggest struggle">
+          <button class="option" data-group="pain" data-value="tools"><span class="option-emoji">🧩</span><span class="option-text">Too many tools</span><span class="option-note">I don't know what to use</span></button>
+          <button class="option" data-group="pain" data-value="time"><span class="option-emoji">⏳</span><span class="option-text">Not enough time</span><span class="option-note">Everything takes forever</span></button>
+          <button class="option" data-group="pain" data-value="ideas"><span class="option-emoji">💡</span><span class="option-text">Running out of ideas</span><span class="option-note">Blank page problem</span></button>
+          <button class="option" data-group="pain" data-value="overwhelm"><span class="option-emoji">🌀</span><span class="option-text">Feeling overwhelmed</span><span class="option-note">I don't know where to start</span></button>
+          <button class="option" data-group="pain" data-value="messy"><span class="option-emoji">🗂️</span><span class="option-text">Everything's messy</span><span class="option-note">My files are chaos</span></button>
+        </div>
+      </div>
+
+      <div class="quiz-nav">
+        <button class="btn-back" id="btnBack" hidden>← Back</button>
+        <button class="btn-next" id="btnNext" disabled>Next →</button>
+      </div>
+    </section>
+
+    <!-- ============ RESULTS ============ -->
+    <section id="results" class="results" aria-label="Your blueprint" hidden>
+      <div class="results-head">
+        <p class="results-eyebrow">Your Workflow Blueprint</p>
+        <h2 class="results-title" id="resultsTitle">Here's your plan</h2>
+        <p class="results-summary" id="resultsSummary"></p>
+      </div>
+
+      <div class="cards" id="cardsGrid"></div>
+
+      <div class="save-row">
+        <button class="btn-save" id="btnSave">💾 Save this blueprint</button>
+      </div>
+
+      <div class="alley-oop" id="alleyOop">
+        <p class="alley-eyebrow">🎯 What to do next</p>
+        <h3 class="alley-title" id="alleyTitle"></h3>
+        <p class="alley-body" id="alleyBody"></p>
+        <a class="alley-cta" id="alleyCta" href="#" target="_blank" rel="noopener">Get the recommended tool</a>
+        <p class="alley-fine">One pick. Set it up. Come back when it's done.</p>
+      </div>
+
+      <button class="btn-restart" id="btnRestart">↺ Start over</button>
+    </section>
+
+    <!-- ============ SAVED BLUEPRINTS ============ -->
+    <section class="saved-panel" id="savedPanel" hidden>
+      <h2 class="saved-head">Your saved blueprints</h2>
+      <p class="saved-sub">Only you can see these. They're tied to your account.</p>
+      <div id="savedList"></div>
+    </section>
+
+    <footer class="footer">
+      <p>Creator Compass · A friendlier way to get unstuck.</p>
+    </footer>
+  </div>
+
+  <!-- ============ AUTH MODAL ============ -->
+  <div class="modal-backdrop" id="authModal" hidden>
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <button class="modal-close" id="modalClose" aria-label="Close">×</button>
+      <h2 class="modal-title" id="modalTitle">Welcome back</h2>
+      <p class="modal-sub" id="modalSub">Sign in to save your blueprints.</p>
+
+      <div class="modal-error" id="modalError" hidden></div>
+
+      <div class="field" id="nameField" hidden>
+        <label for="inpName">Your name</label>
+        <input type="text" id="inpName" autocomplete="name" placeholder="Alex" />
+      </div>
+      <div class="field">
+        <label for="inpEmail">Email</label>
+        <input type="email" id="inpEmail" autocomplete="email" placeholder="you@email.com" />
+      </div>
+      <div class="field">
+        <label for="inpPass">Password</label>
+        <input type="password" id="inpPass" autocomplete="current-password" placeholder="At least 6 characters" />
+      </div>
+
+      <button class="btn-primary-full" id="btnAuthSubmit">Sign in</button>
+
+      <div class="divider-or">or</div>
+      <button class="btn-google" id="btnGoogle">
+        <span>🔵</span> Continue with Google
+      </button>
+
+      <p class="modal-switch" id="modalSwitch">
+        New here? <button id="switchMode" type="button">Create an account</button>
+      </p>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script type="module" src="script.js"></script>
+</body>
+</html>
